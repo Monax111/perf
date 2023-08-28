@@ -4,6 +4,13 @@ plugins {
     kotlin("jvm") version kotlinVersion
     kotlin("plugin.spring") version kotlinVersion
     kotlin("plugin.jpa") version kotlinVersion
+    id("com.bmuschko.docker-spring-boot-application") version "9.3.2"
+}
+
+docker {
+    springBootApplication {
+        baseImage.set("openjdk:17-jdk-slim")
+    }
 }
 
 group = "ru.tim.conference"
