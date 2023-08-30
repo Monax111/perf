@@ -29,12 +29,12 @@ repositories {
 dependencies {
     implementation(platform("org.springframework.boot:spring-boot-dependencies:2.7.16-SNAPSHOT"))
     implementation("org.springframework.boot:spring-boot-starter-actuator")
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+//    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     runtimeOnly("io.micrometer:micrometer-registry-prometheus")
-    runtimeOnly("org.postgresql:postgresql")
+//    runtimeOnly("org.postgresql:postgresql")
 
     testImplementation(platform("org.testcontainers:testcontainers-bom:1.18.3"))
     testImplementation("org.springframework.boot:spring-boot-starter-test")
