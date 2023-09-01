@@ -39,6 +39,7 @@ dependencies {
     implementation(platform("org.testcontainers:testcontainers-bom:1.18.3"))
     implementation(group = "org.testcontainers", name = "jdbc")
     implementation(group = "org.testcontainers", name = "postgresql")
+    implementation(group = "io.github.microutils", name = "kotlin-logging", version = "+")
 
     testImplementation(platform("org.testcontainers:testcontainers-bom:1.18.3"))
     testImplementation("org.springframework.boot:spring-boot-starter-test")
@@ -54,5 +55,9 @@ dependencies {
 tasks {
     check {
         dependsOn(gatlingRun)
+    }
+
+    gatlingRun{
+        dependsOn(dockerBuildImage)
     }
 }

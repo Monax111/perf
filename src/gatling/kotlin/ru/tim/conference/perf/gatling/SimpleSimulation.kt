@@ -1,13 +1,12 @@
 package ru.tim.conference.perf.gatling
 
 import io.gatling.javaapi.core.CoreDsl
-import io.gatling.javaapi.core.CoreDsl.atOnceUsers
+import io.gatling.javaapi.core.CoreDsl.constantUsersPerSec
 import io.gatling.javaapi.core.CoreDsl.rampUsersPerSec
 import io.gatling.javaapi.core.ScenarioBuilder
 import io.gatling.javaapi.core.Simulation
 import io.gatling.javaapi.http.HttpDsl
-import ru.tim.conference.perf.container.Config
-import ru.tim.conference.perf.container.JvmContainer
+import java.util.UUID
 import ru.tim.conference.perf.container.Stand
 
 
@@ -24,14 +23,18 @@ class SimpleSimulation : Simulation() {
 
     // Объясняем куда стучаться к нашему приложению
     val scenario: ScenarioBuilder = CoreDsl.scenario("Perf")
-        .exec(HttpDsl.http("score").get(stand.application.getUrl()+"/score/123"))
+        .exec(HttpDsl.http("score").get {
+            stand.application.getUrl() + "/score/" + UUID.randomUUID()
+        })
 
     init {
         // Конфигурируем нагрузку
         setUp(
             scenario.injectOpen(
-                atOnceUsers(10),
-                rampUsersPerSec(10.0).to(300.0).during(10),
+                constantUsersPerSec(50.0).during(10),
+                rampUsersPerSec(50.0).to(300.0).during(10),
+                constantUsersPerSec(200.0).during(10),
+                constantUsersPerSec(50.0).during(30),
             )
         )
 

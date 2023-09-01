@@ -5,6 +5,11 @@ spring:
     url: jdbc:tc:postgresql:11:///test
     username: test
     password: test
+  jpa:
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create-drop
+
 
 server:
   port: 8080 # never change it on qa/test. Even in consul

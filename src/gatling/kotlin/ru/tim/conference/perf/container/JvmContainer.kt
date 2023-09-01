@@ -24,24 +24,7 @@ open class JvmContainer(open val service: Config, tag: String = "latest") :
 
     override fun getLivenessCheckPortNumbers(): MutableSet<Int> = mutableSetOf(service.managementPort)
 
-    fun withMilliCpuLimit(milliCpu: Long): JvmContainer {
-        super.withCreateContainerCmdModifier {
-            it.hostConfig!!.apply {
-                withCpuPeriod(100_000)
-                withCpuQuota(milliCpu * 100)
-            }
-        }
-        return this
-    }
 
-    fun withMemoryLimit(megaByte: Long): JvmContainer {
-        super.withCreateContainerCmdModifier {
-            it.hostConfig!!.apply {
-                withMemory(megaByte * 1000 * 1000)
-            }
-        }
-        return this
-    }
 
     fun withSpringProfile(profile: String): JvmContainer {
         withEnv("SPRING_PROFILES_ACTIVE", profile)
@@ -62,7 +45,7 @@ open class JvmContainer(open val service: Config, tag: String = "latest") :
                 .forHttp(service.readinessPath)
                 .forPort(service.managementPort)
                 .withReadTimeout(Duration.ofSeconds(1))
-                .withStartupTimeout(Duration.ofSeconds(30))
+                .withStartupTimeout(Duration.ofSeconds(40))
 
         )
         return this
@@ -73,8 +56,8 @@ open class JvmContainer(open val service: Config, tag: String = "latest") :
         withNetwork(perfNetwork)
         withNetworkAliases(service.networkAlias)
         withJvmOptions{}
-        withMemoryLimit(1000)
-        withMilliCpuLimit(1000)
+        withMemoryLimit(300)
+        withMilliCpuLimit(500)
         withHealthAwait()
         withExposedPorts(service.apiPort, service.managementPort)
 
@@ -94,7 +77,7 @@ open class JvmContainer(open val service: Config, tag: String = "latest") :
 }
 
 class JvmOption {
-    var xmx = 700
+    var xmx = 200
     var compressedClassSpaceSize = 100
     var maxMetaspaceSize = 110
     var reservedCodeCacheSize = 85
@@ -103,4 +86,24 @@ class JvmOption {
         "-XX:CompressedClassSpaceSize=${compressedClassSpaceSize}M " +
         "-XX:MaxMetaspaceSize=${maxMetaspaceSize}M " +
         "-XX:ReservedCodeCacheSize=${reservedCodeCacheSize}M "
+}
+
+
+inline fun <reified T : GenericContainer<T>> GenericContainer<T>.withMilliCpuLimit(milliCpu: Long): GenericContainer<T> {
+    withCreateContainerCmdModifier {
+        it.hostConfig!!.apply {
+            withCpuPeriod(100_000)
+            withCpuQuota(milliCpu * 100)
+        }
+    }
+    return this
+}
+
+inline fun <reified T : GenericContainer<T>> GenericContainer<T>.withMemoryLimit(megaByte: Long): GenericContainer<T> {
+    withCreateContainerCmdModifier {
+        it.hostConfig!!.apply {
+            withMemory(megaByte * 1000 * 1000)
+        }
+    }
+    return this
 }
