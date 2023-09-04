@@ -50,6 +50,7 @@ dependencies {
     gatlingImplementation("org.testcontainers:junit-jupiter")
     gatlingImplementation(group = "io.github.microutils", name = "kotlin-logging", version = "+")
     gatlingImplementation(group = "org.testcontainers", name = "postgresql")
+    gatlingImplementation("com.google.code.gson:gson:2.10.1")
 }
 
 tasks {

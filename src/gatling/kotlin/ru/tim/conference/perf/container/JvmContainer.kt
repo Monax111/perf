@@ -2,11 +2,24 @@ package ru.tim.conference.perf.container
 
 import java.time.Duration
 import mu.two.KotlinLogging
+import org.junit.runner.Description
+import org.junit.runners.model.Statement
 import org.testcontainers.containers.GenericContainer
+import org.testcontainers.containers.InternetProtocol
 import org.testcontainers.containers.Network
 import org.testcontainers.containers.wait.strategy.Wait
 
-val perfNetwork: Network = Network.newNetwork()
+
+// docker network create -d bridge perf
+val perfNetwork: Network = NetworkImpl("perf")
+
+class NetworkImpl(val ids: String) : Network {
+    override fun close() = Unit
+    override fun apply(base: Statement, description: Description): Statement {
+        return base
+    }
+    override fun getId() = ids
+}
 
 private val logger = KotlinLogging.logger {}
 
@@ -51,6 +64,11 @@ open class JvmContainer(open val service: Config, tag: String = "latest") :
         return this
     }
 
+    fun withFixedExposedPort(hostPort: Int, containerPort: Int): JvmContainer {
+        super.addFixedExposedPort(hostPort, containerPort, InternetProtocol.TCP)
+        return this
+    }
+
     fun startContainer(): JvmContainer {
 
         withNetwork(perfNetwork)
@@ -59,7 +77,7 @@ open class JvmContainer(open val service: Config, tag: String = "latest") :
         withMemoryLimit(300)
         withMilliCpuLimit(500)
         withHealthAwait()
-        withExposedPorts(service.apiPort, service.managementPort)
+        withFixedExposedPort(service.apiPort, service.apiPort)
 
         super.start()
         // followOutput(Slf4jLogConsumer(logger))

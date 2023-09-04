@@ -7,7 +7,7 @@ import io.gatling.javaapi.core.ScenarioBuilder
 import io.gatling.javaapi.core.Simulation
 import io.gatling.javaapi.http.HttpDsl
 import java.util.UUID
-import ru.tim.conference.perf.container.Stand
+import ru.tim.conference.perf.Stand
 
 
 /**

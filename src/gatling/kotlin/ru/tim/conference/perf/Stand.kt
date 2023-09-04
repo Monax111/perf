@@ -1,6 +1,10 @@
-package ru.tim.conference.perf.container
+package ru.tim.conference.perf
 
 import org.testcontainers.containers.PostgreSQLContainer
+import ru.tim.conference.perf.container.Config
+import ru.tim.conference.perf.container.JvmContainer
+import ru.tim.conference.perf.container.perfNetwork
+import ru.tim.conference.perf.container.withMilliCpuLimit
 
 class Stand {
 
